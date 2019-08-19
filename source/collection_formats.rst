@@ -3,50 +3,42 @@
 Image Collection Formats
 ==================================================
 
-Image collection formats describe how image collections are 
-composed from GDAL datasets, considering
-specific data product organizations.
+Image collection formats describe how image collections are composed from GDAL datasets, considering specific data product organizations.
 
-A collection format is a JSON file that defines rules how that are applied to derive 
-required metadata when a GDAL dataset 
-(specified by its identifier, e.g. the path to a local GeoTIFF file) 
-shall be added to a collection.
+A collection format is a JSON file defining rules, how to derive required metadata when a GDAL dataset 
+(specified by its identifier, e.g. the path to a local GeoTIFF file) is added to an image collection.
 
-To add a GDAL dataset (given its identifier) to a collection, 
-we must find out
+When adding a GDAL dataset (given its identifier) to a collection, we must find out
 
 - to which image the dataset belongs (identified by a unique image name),
 - the recording date/time of the dataset, and
-- which bands of the dataset correspond to which bands of the collection.
+- how bands of the dataset relate to bands of the collection.
 
 
 
-Regular expressions
+Regular Expressions
 ----------------------------------------------------------
 
-Rules are mostly defined as regular expresions on the GDAL dataset identifiers.
-gdalcubes uses the `standard C++11 regular expression library <http://www.cplusplus.com/reference/regex>`_ with default `ECMAScript <http://www.cplusplus.com/reference/regex/ECMAScript>`_ syntax.
+Rules are mostly defined as regular expresions on the GDAL dataset identifiers. Some expressions
+simply check whether a dataset *matches* the expression or not, whereas some expression return a captured substring (e.g. the datetime part). gdalcubes uses the `standard C++11 regular expression library <http://www.cplusplus.com/reference/regex>`_ with default `ECMAScript <http://www.cplusplus.com/reference/regex/ECMAScript>`_ syntax.
 
 
 
-JSON format
+JSON Format
 ------------------------------------
 
 
-Header information
+Header Information
 ####################################
 
 The JSON files for image collection formats start with some header information, 
-including a short description of the particular product
-it adresses and some keywords. These header information are optional, but may be useful
-for searching.
+including a short description of the particular product it adresses and some keywords. These header information are optional, but may be useful for searching.
 
 For example, the following description and tags are used in the collection format
 for Sentinel 2 Level 2A products.
 
 .. code-block:: json
    :caption: Example header information of the Sentinel 2 Level 2A collection format.
-   
    
     "description" : "Image collection format for Sentinel 2 Level 2A data as downloaded from the Copernicus Open Access Hub, expects a list of file paths as input. The format should work on original ZIP compressed as well as uncompressed imagery.",
     "tags" : ["Sentinel", "Copernicus", "ESA", "BOA", "Surface Reflectance"]
@@ -56,9 +48,9 @@ for Sentinel 2 Level 2A products.
 Global Dataset Pattern 
 ####################################
 
-Collection formats *can* specify a global pattern as a regular expression 
+Collection formats include a global pattern as a regular expression 
 such that input GDAL datasets not matching the regular expression will 
-simply be ignored (quitly, without throwing an error). 
+simply be ignored (quitly, without throwing exceptions). 
 As a simple example, setting ``"pattern" : ".*\\.tif$"``
 would ignore paths that do not end with ".tif".  
 
@@ -80,7 +72,7 @@ The extracted name must be identical for all datasets
 belonging to the same image.
 
 To extract the image name from the identifier, 
-the first marked subexpression (or capturing group) of the 
+the first *marked subexpression* (or *capturing group*) of the 
 provided regular expression under ``"images" : {"pattern": "REGEX"}``
 is used, i.e., a part in the expression within the first pair of parentheses. 
 
@@ -131,9 +123,8 @@ Extracting date/time information
 
 In the current version of gdalcubes, we assume that the acquisition 
 date/time of images can be derived from the dataset identifiers. 
-Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The format definition in the collection format then 
-defines how convert the extracted string to a date/time object, according to the `strptime function <http://pubs.opengroup.org/onlinepubs/9699919799/functions/strptime.html>`_.
-
+Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` definition in the collection format then defines how convert the extracted string to a date/time object, according to the `strptime function <http://pubs.opengroup.org/onlinepubs/9699919799/functions/strphtml>`_.
+time.
 
 
 
@@ -178,16 +169,14 @@ Example 2 (MODIS MOD13A2)
 
 
 
-Defining image collection bands
+Defining Image Collection Bands
 ####################################
 
 
-The ``bands`` object lists the bands of a data product as key value pairs, where the key is a unique band name, and the value is 
-a JSON object with a pattern and optional other fields. The `pattern` field again defines a regular expression. If a GDAL dataset identifier matches the pattern, it .....   A identifier may match the pattern of several bands (sometimes, all bands even define the same pattern) if a single input GDAL dataset contains multiple bands. In this case, the additional field `band` can be used to describe define which internal band corresponds to the band of the imae collection. `band` can be a one-based integer number and is identical to the band number of GDAL.
+The ``bands`` object lists the bands of a data product as key value pairs, where the key is a unique band name, and the value is a JSON object with a pattern and optional other fields. The `pattern` field again defines a regular expression. If a GDAL dataset identifier matches the pattern, it is considered to contain data of the band.  An dataset identifier may match the pattern of several bands (sometimes, all bands even define the same pattern) if a single input GDAL dataset contains multiple bands. In this case, the additional field `band` can be used to describe which internal band corresponds to the band of the image collection. ``band`` can be a one-based integer number and is identical to the band number of GDAL (as from running ``gdalinfo``).
 
 
-Some additional per-band metadata fields may be added to band definitions. In the current version, these include `nodata`, `scale`, `offset`, and `unit`.
-If these values are not provided, they are derived from the GDAL metadata (which may or may not be defined).
+Some additional per-band metadata fields may be added to band definitions. In the current version, these include ``nodata``, ``scale``, ``offset``, and ``unit``. If these values are not provided, they are derived from the GDAL metadata (which may or may not be defined).
 
 
 Example 1: One GDAL dataset - one band
@@ -227,7 +216,7 @@ The following example can be used to define some of the bands of Landsat 8 surfa
 Example 2: One GDAL dataset - many bands
 ******************************************
 
-The following example can be used to define bands of PlanetScope data, where all bands (except a mask band) are stored in a single GeoTIFF file.
+The following example can be used to define bands of PlanetScope surface reflectance data, where all bands (except a mask band) are stored in a single GeoTIFF file.
 
 .. code-block:: json
    :caption: Example band definitions for PlanetScope surface reflectance collection format.
@@ -258,14 +247,9 @@ The following example can be used to define bands of PlanetScope data, where all
 Additional Image Metadata
 ####################################
 
-It is possible to extract further per-image metadata key value pairs from GDAL datasets. The collection format may include 
-an optional field "image_md_fields" to list metadata keys as a JSON array of strings. When GDAL datasets
-are opened, GDAL tries to find the corresponding metadata keys and stores corresponding values in the image metadata table 
-of the image collection.
+It is possible to extract further per-image metadata key value pairs from GDAL datasets. The collection format may include an optional field "image_md_fields" to list metadata keys as a JSON array of strings. When GDAL datasets are opened, GDAL tries to find the corresponding metadata keys and stores corresponding values in the image metadata table of the image collection.
 
-Metadata fields may be separated by domains (see GDAL metadata model at https://gdal.org/user/raster_data_model.html#metadata).
-If metadata fields from a specific domain are needed, use "DOMAIN:KEY", such as "IMAGERY:CLOUDCOVER". The example below 
-could be used to get some per-image quality flags from MODIS metadata.
+Metadata fields may be separated by domains (see GDAL metadata model at https://gdal.org/user/raster_data_model.html#metadata). If metadata fields from a specific domain are needed, you can use "DOMAIN:KEY", such as "IMAGERY:CLOUDCOVER". The example below could be used to get some per-image quality flags from MODIS metadata.
 
 .. code-block:: json
    :caption: Example metadata fields for a MODIS (MOD13A2) product.
@@ -276,8 +260,7 @@ could be used to get some per-image quality flags from MODIS metadata.
 Complete Examples
 -------------------------------------
 
-
-Complete examples can be found at a `dedicated GitHub repository <https://github.com/appelmar/gdalcubes_formats/tree/master/formats>`_.
+Complete examples of image collection formats can be found in the sources. There is also a `dedicated GitHub repository <https://github.com/appelmar/gdalcubes_formats/tree/master/formats>`_.
 
 
 
@@ -290,4 +273,4 @@ to check the following notes:
 - If available, read the data product handbook. Most official satellite image product handbooks include a section on filenaming conventions.
 - For portability of local file-based image collections, make sure that preceding directory names (e.g. "C:\\Users\\", or "/home/user/data") do not matter to successfully create image collections.  
 - If possible, avoid using path separators in regular expressions or use *non-capturing alternation* ``(?:/|\\)`` if you have to.
-- Image collections do not need to include data for all bands. It is recommended to list all possible bands of a data product. For example, Landsat 8 surface reflectance products may or may not include additional precomputed spectral index bands. To be able to use these bands if available, they must be listed in the collection format.
+- Image collections do not need to include data for all bands. It is recommended to list all possible bands of a data product in the format. For example, Landsat 8 surface reflectance products may or may not include additional precomputed spectral index bands. To be able to use these bands if available, they must be listed in the collection format.
