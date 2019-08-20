@@ -52,7 +52,7 @@ Collection formats include a global pattern as a regular expression
 such that input GDAL datasets not matching the regular expression will 
 simply be ignored (quitly, without throwing exceptions). 
 As a simple example, setting ``"pattern" : ".*\\.tif$"``
-would ignore paths that do not end with ".tif".  
+would ignore files that do not end with ".tif".  
 
 
 
@@ -121,10 +121,9 @@ Example 2 (MODIS MOD13A2)
 Extracting date/time information
 ####################################
 
-In the current version of gdalcubes, we assume that the acquisition 
-date/time of images can be derived from the dataset identifiers. 
-Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` definition in the collection format then defines how convert the extracted string to a date/time object, according to the `strptime function <http://pubs.opengroup.org/onlinepubs/9699919799/functions/strphtml>`_.
-time.
+In the current version of gdalcubes, the acquisition 
+date/time of images is derived from the dataset identifiers. 
+Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` field in ``datetime`` JSON object then defines how to convert the extracted string to a date/time object, according to the `strptime function <http://pubs.opengroup.org/onlinepubs/9699919799/functions/strphtml>`_..
 
 
 
