@@ -123,7 +123,7 @@ Extracting date/time information
 
 In the current version of gdalcubes, the acquisition 
 date/time of images is derived from the dataset identifiers. 
-Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` field in ``datetime`` JSON object then defines how to convert the extracted string to a date/time object, according to the `strptime function <http://pubs.opengroup.org/onlinepubs/9699919799/functions/strphtml>`_.
+Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` field in ``datetime`` JSON object then defines how to convert the extracted string to a date/time object, according to the `strptime function <https://pubs.opengroup.org/onlinepubs/9699919799/functions/strptime.html>`_.
 
 
 
