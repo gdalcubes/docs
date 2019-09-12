@@ -242,6 +242,15 @@ The following example can be used to define bands of PlanetScope surface reflect
 
 
 
+Reading GDAL subdatasets
+####################################
+
+For some data products (such as MODIS), bands are distributed as GDAL subdatasets within a single file (typically NetCDF or HDF). Adding ``"subdatasets" = true`` to the top-level JSON object
+makes sure that all subdatasets will be considered automatically. Other patterns of the collection format to extract image names amd date/time then relate to subdataset identifiers.
+
+.. note::
+   This feature has been added in the current development version and will most likely be considered in the 0.3.0 release.
+
 
 Additional Image Metadata
 ####################################
