@@ -248,8 +248,20 @@ Reading GDAL subdatasets
 For some data products (such as MODIS), bands are distributed as GDAL subdatasets within a single file (typically NetCDF or HDF). Adding ``"subdatasets" : true`` to the top-level JSON object
 makes sure that all subdatasets will be considered automatically. Other patterns of the collection format to extract image names amd date/time then relate to subdataset identifiers.
 
+
+
+Defining a Global Spatial Reference System
+##############################################
+
+Some global climate data products distributed as NetCDF files do not encode the SRS of images in a way that GDAL reads automatically.
+In these cases the collection format allows to define a global spatial reference system that overwrites the reference system 
+of individual images (if available). For example, adding ``"srs" : "EPSG:4326"`` to the top-level JSON object
+makes sure that the WGS84 spatial reference system will be used for all images.
+
 .. note::
    This feature has been added in the current development version and will most likely be considered in the 0.3.0 release.
+
+
 
 
 Additional Image Metadata
