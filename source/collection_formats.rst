@@ -126,7 +126,6 @@ date/time of images is derived from the dataset identifiers.
 Similar to the extraction of image names, a pattern defines a regular expression where the first marked subexpression / capturing group within parentheses is extracted. The ``format`` field in ``datetime`` JSON object then defines how to convert the extracted string to a date/time object, according to the `strptime function <https://pubs.opengroup.org/onlinepubs/9699919799/functions/strptime.html>`_.
 
 
-
 Example 1 (Sentinel 2 Level 2A SAFE format, from .zip files)
 *********************************************************************
 
@@ -165,6 +164,27 @@ Example 2 (MODIS MOD13A2)
 | 2. "HDF4_EOS:EOS_GRID:\\"/path/to/MOD13A2.A\ **2013353**\ .h20v03.006.2018226105924.hdf\\":MODIS_Grid_16DAY_1km_VI:1 km 16 days NDVI"       |
 | 3. "HDF4_EOS:EOS_GRID:\\"/path/to/MOD13A2.A\ **2015033**\ .h23v10.006.2015296122819.hdf\\":MODIS_Grid_16DAY_1km_VI:1 km 16 days VI Quality" |
 +---------------------------------------------------------------------------------------------------------------------------------------------+ 
+
+
+Some MODIS and climate model output datsets are provided as multidimensional HDF or netCDF files, where one file (or GDAL dataset) contains space and time of one variable.  In these cases, GDAL exposes the additional time dimension as bands. For such datasets, gdalcubes supports the additional definition of the *duration* of a band. This duration is then added to the offset date/time, which is extracted from the filename as described above. 
+
+Example 3 (pr_day_HadGEM2-ES_historical_r1i1p1)
+**************************************
+
+.. code-block:: json
+
+    "datetime" : {
+        "pattern" : ".*pr_day_HadGEM2-ES_historical_r1i1p1_EWEMBI_([0-9]{8}).*",
+        "format" : "%Y%m%d",
+        "bands" : {
+            "dt" : "P1D" }}
+
+In this example the 10th band (zero-based) for example represents 10 days after the date extracted from the filename.
+
+.. note::
+   This feature is experimental and only available in the development version.
+
+
 
 
 
