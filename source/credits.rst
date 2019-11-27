@@ -14,10 +14,10 @@ by the core library.
     - gdalcubes may statically or dynamically link to the gdal library depending on compilation flags
 
 
-- `json <https://github.com/nlohmann/json>`_:  *JSON for Modern C++*
-     - Copyright (c) 2013-2018 Niels Lohmann
+- `json11 <https://github.com/dropbox/json11>`_*
+     - Copyright (c) 2013 Dropbox, Inc.
      - License: MIT (https://opensource.org/licenses/MIT) 
-     - gdalcubes distributes a **modified** version of the library under `src/external/json.hpp`, modifications are limited to commenting out diagnostic pragmas (see https://github.com/appelmar/gdalcubes/commit/9e936155489a97c5bb211e13e757236762ee1d96)
+     - gdalcubes distributes an unmodified version of the library under `src/external/json11/*`
 
 
 - `SQLite <https://www.sqlite.org/>`_:  *A self-contained, high-reliability, embedded, full-featured, public-domain, SQL database engine**
