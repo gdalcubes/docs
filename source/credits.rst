@@ -14,7 +14,7 @@ by the core library.
     - gdalcubes may statically or dynamically link to the gdal library depending on compilation flags
 
 
-- `json11 <https://github.com/dropbox/json11>`_*
+- `json11 <https://github.com/dropbox/json11>`_
      - Copyright (c) 2013 Dropbox, Inc.
      - License: MIT (https://opensource.org/licenses/MIT) 
      - gdalcubes distributes an unmodified version of the library under `src/external/json11/*`
