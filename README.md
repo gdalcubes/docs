@@ -1,4 +1,5 @@
-# Website and Documentation for gdalcubes
+
+This repository has been archived in favor of the new website at https://github.com/gdalcubes/gdalcubes.github.io (see https://gdalcubes.github.io)
 
 
-This respository contains the general documentation of gdalcubes, published at https://gdalcubes.github.io/docs, based on [Sphinx](https://www.sphinx-doc.org).
+
